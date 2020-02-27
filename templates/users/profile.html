@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="container">
+<h1>Profile</h1>
+  {# Hmm. Not thrilled about this. #}
+  {# Could use django-bootstrap4 which removes some of this ugliness. #}
+  {# Or some AJAX-based way to retrieve messages. #}
+  {# I don't like the use of cookies for this. #}
+
+
+<div class="row">
+<div class="col-md-6 col-lg-6">
+
+  <form action="{% url 'account_profile' %}" method="post" class="form">
+    {% csrf_token %}
+    {{ form | crispy }}
+    
+    <button type="submit" class="btn btn-primary">
+      
+    </button>
+    
+{% endblock content %}
