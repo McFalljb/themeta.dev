@@ -15,8 +15,10 @@ Including another URLconf
 """
 
 from django.urls import path
-from .views import account_profile
+from . import views
+from .views import account_edit
 
 urlpatterns = [
-    path('accounts/profile/', account_profile, name='account_profile')
+    path('accounts/profile/', views.UserProfile, name='account_profile'),
+    path('accounts/edit/', account_edit, name='account_edit')
 ]

@@ -2,8 +2,28 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.views.generic.edit import FormMixin, UpdateView
-
+from django.shortcuts import render, redirect
 from .forms import UserEditForm
+
+
+@login_required
+def UserProfile(request):
+    if request.method == 'POST':
+        u_form = UserEditForm(request.POST, instance=request.user)
+
+        if u_form.is_valid():
+            u_form.save()
+            messages.success(request, f'Your profile has been updated!')
+            return redirect('account_profile')
+    
+    else:
+        u_form = UserEditForm(instance=request.user)
+    
+    context = {
+        'u_form': u_form,
+    }
+
+    return render(request, 'users/profile.html', context)
 
 
 class MyModelInstanceMixin(FormMixin):
@@ -31,8 +51,8 @@ class UserEditView(UpdateView):
     ``get_object`` method.
     """
     form_class = UserEditForm
-    template_name = "users/profile.html"
-    view_name = 'account_profile'
+    template_name = "users/profile_edit.html"
+    view_name = 'account_edit'
     success_url = reverse_lazy(view_name)
 
     def get_object(self):
@@ -44,4 +64,4 @@ class UserEditView(UpdateView):
         return super(UserEditView, self).form_valid(form)
 
 
-account_profile = login_required(UserEditView.as_view())
+account_edit = login_required(UserEditView.as_view())
