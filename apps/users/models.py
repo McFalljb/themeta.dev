@@ -173,10 +173,7 @@ def set_initial_user_names(request, user, sociallogin=None, **kwargs):
 
     if sociallogin:
         # Extract first / last names from social nets and store on User record
-        if sociallogin.account.provider == 'twitter':
-            name = sociallogin.account.extra_data['name']
-            user.first_name = name.split()[0]
-            user.last_name = name.split()[1]
+
 
         if sociallogin.account.provider == 'facebook':
             user.first_name = sociallogin.account.extra_data['first_name']

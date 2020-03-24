@@ -11,9 +11,14 @@
         <button type="submit" class="btn btn-primary"> Submit </button>
       </div>
       <div class="col-md-6 col-lg-6">
-        test
+        <ul>
+          <li><a href="{% url 'account_change_password' %}">Change Password</a></li>
+          <li><a href="{% url 'account_email' %}">Edit Email Addresses</a></li>
+          <li><a href="{% url 'socialaccount_connections' %}">Edit Social Logins</a></li>
+        </ul>
       </div>
     </div>
   </div>
+
 
 {% endblock %}

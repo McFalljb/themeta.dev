@@ -107,6 +107,8 @@ ACCOUNT_LOGOUT_REDIRECT_URL ='homepage'
 LOGIN_REDIRECT_URL = 'homepage'
 SOCIALACCOUNT_AUTO_SIGNUP = False  # require social accounts to use the signup form ... I think
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 #AllAuth socials accounts
 SOCIALACCOUNT_PROVIDERS = {
     'facebook': {

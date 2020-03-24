@@ -25,7 +25,6 @@ def UserProfile(request):
 
     return render(request, 'users/profile.html', context)
 
-
 class MyModelInstanceMixin(FormMixin):
     def get_model_instance(self):
         return None
