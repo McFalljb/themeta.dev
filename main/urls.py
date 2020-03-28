@@ -22,7 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('apps.blog.urls')),
     path('', include('apps.users.urls')),
-    path('accounts/', include('allauth.urls')), # new
+    path('accounts/', include('allauth.urls')), # django allauth
 ]
 
 if settings.DEBUG:

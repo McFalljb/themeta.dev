@@ -1,22 +1,22 @@
 from django import forms
 from allauth.account.forms import SignupForm
-from .models import User
+from .models import User, UserProfile
 
 
 class UserEditForm(forms.ModelForm):
-    """Form for viewing and editing name fields in a User object.
 
-    A good reference for Django forms is:
-    http://pydanny.com/core-concepts-django-modelforms.html
-    """
-
-    def __init__(self, *args, **kwargs):
+    #def __init__(self, *args, **kwargs):
         # TODO: this doesn't seem to work. Need to get to the bottom of it.
-        super().__init__(*args, **kwargs)
+    #    super().__init__(*args, **kwargs)
 
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'display_name')
+
+class ProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['avatar']
 
 class UserAdminForm(forms.ModelForm):
     class Meta:

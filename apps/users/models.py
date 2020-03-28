@@ -7,6 +7,7 @@ from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.http import urlquote
 from django.utils.translation import ugettext_lazy as _
+from PIL import Image
 
 try:
     from django.utils.encoding import force_text
@@ -129,22 +130,26 @@ class UserProfile(models.Model):
     profile information you might create additional profile classes, like
     say UserGeologistProfile.
     """
-    user = models.OneToOneField(User, primary_key=True, verbose_name='user', related_name='profile',
-                                on_delete=models.CASCADE)
-
-    # I oscillate between whether the ``avatar_url`` should be
-    # a) in the User model
-    # b) in this UserProfile model
-    # c) in a table of it's own to track multiple pictures, with the
-    #    "current" avatar as a foreign key in User or UserProfile.
-    avatar_url = models.CharField(max_length=256, blank=True, null=True)
-    
+    user = models.OneToOneField(User, primary_key=True, verbose_name='user', related_name='profile', on_delete=models.CASCADE)
+    avatar = models.ImageField(default='profile_pics/default.jpg', upload_to='profile_pics')
     dob = models.DateField(verbose_name="dob", blank=True, null=True)
 
     def __str__(self):
         return force_text(self.user.email)
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        img = Image.open(self.image.path)
+
+        if img.height > 300 or img.width > 300:
+            output_size = (300, 300)
+            img.thumbnail(output_size)
+            img.save(self.image.path)
 
     class Meta():
+        verbose_name = _('user_profile')
+        verbose_name_plural = _('user_profiles')
         db_table = 'user_profile'
 
 

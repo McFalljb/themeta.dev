@@ -4,9 +4,10 @@
   <div class='container'>
     <div class="row">
       <div class="col-md-6 col-lg-6">
-        <form action="{% url 'account_profile' %}" method="post" class="form">
+        <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form | crispy }}
+        {{ u_form|crispy }}
+        {{ p_form|crispy }}
         
         <button type="submit" class="btn btn-primary"> Submit </button>
       </div>

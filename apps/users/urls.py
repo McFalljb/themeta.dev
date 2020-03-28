@@ -19,5 +19,6 @@ from . import views
 
 urlpatterns = [
     path('users/profile/', views.UserProfile, name='account_profile'),
-    path('users/profile_edit/', views.account_edit, name='account_edit'),
+    #path('users/profile_edit/', views.account_edit, name='account_edit'),
+    path('users/profile_edit/', views.UserEditProfile, name='profile_edit'),
 ]

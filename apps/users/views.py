@@ -3,27 +3,55 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.views.generic.edit import FormMixin, UpdateView
 from django.shortcuts import render, redirect
-from .forms import UserEditForm
+from .forms import UserEditForm, ProfileUpdateForm
 
 
-@login_required
+#@login_required
 def UserProfile(request):
     if request.method == 'POST':
         u_form = UserEditForm(request.POST, instance=request.user)
-
-        if u_form.is_valid():
+        p_form = ProfileUpdateForm(request.POST,
+                                   request.FILES,
+                                   instance=request.user.profile)
+        if u_form.is_valid() and p_form.is_valid():
             u_form.save()
+            p_form.save()
             messages.success(request, f'Your profile has been updated!')
             return redirect('account_profile')
     
     else:
         u_form = UserEditForm(instance=request.user)
+        p_form = ProfileUpdateForm(instance=request.user.profile)
     
     context = {
         'u_form': u_form,
+        'p_form': p_form,
     }
 
     return render(request, 'users/profile.html', context)
+
+def UserEditProfile(request):
+    if request.method == 'POST':
+        u_form = UserEditForm(request.POST, instance=request.user)
+        p_form = ProfileUpdateForm(request.POST,
+                                   request.FILES,
+                                   instance=request.user.profile)
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()
+            p_form.save()
+            messages.success(request, f'Your profile has been updated!')
+            return redirect('account_profile')
+    
+    else:
+        u_form = UserEditForm(instance=request.user)
+        p_form = ProfileUpdateForm(instance=request.user.profile)
+    
+    context = {
+        'u_form': u_form,
+        'p_form': p_form,
+    }
+
+    return render(request, 'users/profile_edit.html', context)
 
 class MyModelInstanceMixin(FormMixin):
     def get_model_instance(self):
@@ -50,9 +78,9 @@ class UserEditView(UpdateView):
     ``get_object`` method.
     """
     form_class = UserEditForm
-    template_name = "users/profile_edit.html"
-    view_name = 'account_edit'
-    success_url = reverse_lazy(view_name)
+    #template_name = "users/profile_edit.html"
+    #view_name = 'account_edit'
+    #success_url = reverse_lazy(view_name)
 
     def get_object(self):
         return self.request.user
@@ -63,4 +91,4 @@ class UserEditView(UpdateView):
         return super(UserEditView, self).form_valid(form)
 
 
-account_edit = login_required(UserEditView.as_view())
+#account_edit = login_required(UserEditView.as_view())
