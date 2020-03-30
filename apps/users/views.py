@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from .forms import UserEditForm, ProfileUpdateForm
 
 
-#@login_required
+@login_required
 def UserProfile(request):
     if request.method == 'POST':
         u_form = UserEditForm(request.POST, instance=request.user)
@@ -30,6 +30,7 @@ def UserProfile(request):
 
     return render(request, 'users/profile.html', context)
 
+@login_required
 def UserEditProfile(request):
     if request.method == 'POST':
         u_form = UserEditForm(request.POST, instance=request.user)
@@ -65,30 +66,28 @@ class MyModelInstanceMixin(FormMixin):
         return instance
 
 
-class UserEditView(UpdateView):
-    """Allow view and update of basic user data.
+# class UserEditViewa(UpdateView):
+#     """Allow view and update of basic user data.
 
-    In practice this view edits a model, and that model is
-    the User object itself, specifically the names that
-    a user has.
+#     In practice this view edits a model, and that model is
+#     the User object itself, specifically the names that
+#     a user has.
 
-    The key to updating an existing model, as compared to creating
-    a model (i.e. adding a new row to a database) by using the
-    Django generic view ``UpdateView``, specifically the
-    ``get_object`` method.
-    """
-    form_class = UserEditForm
-    #template_name = "users/profile_edit.html"
-    #view_name = 'account_edit'
-    #success_url = reverse_lazy(view_name)
+#     The key to updating an existing model, as compared to creating
+#     a model (i.e. adding a new row to a database) by using the
+#     Django generic view ``UpdateView``, specifically the
+#     ``get_object`` method.
+#     """
+#     form_class = UserEditForm
+#     #template_name = "users/profile_edit.html"
+#     #view_name = 'account_edit'
+#     #success_url = reverse_lazy(view_name)
 
-    def get_object(self):
-        return self.request.user
+#     def get_object(self):
+#         return self.request.user
 
-    def form_valid(self, form):
-        form.save()
-        messages.add_message(self.request, messages.INFO, 'User profile updated')
-        return super(UserEditView, self).form_valid(form)
-
-
+#     def form_valid(self, form):
+#         form.save()
+#         messages.add_message(self.request, messages.INFO, 'User profile updated')
+#         return super(UserEditView, self).form_valid(form)
 #account_edit = login_required(UserEditView.as_view())

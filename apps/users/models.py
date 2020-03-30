@@ -140,10 +140,10 @@ class UserProfile(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
-        img = Image.open(self.image.path)
+        img = Image.open(self.avatar.path)
 
-        if img.height > 300 or img.width > 300:
-            output_size = (300, 300)
+        if img.height > 240 or img.width > 240:
+            output_size = (240, 240)
             img.thumbnail(output_size)
             img.save(self.image.path)
 

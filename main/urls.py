@@ -23,6 +23,7 @@ urlpatterns = [
     path('', include('apps.blog.urls')),
     path('', include('apps.users.urls')),
     path('accounts/', include('allauth.urls')), # django allauth
+    path('tinymce/', include('tinymce.urls')), #tinymce
 ]
 
 if settings.DEBUG:
