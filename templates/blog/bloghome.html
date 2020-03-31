@@ -2,19 +2,30 @@
 {% block content %}
 
 <br><br>
-
+<!-- Post display -->
 <div class='container'>
   <div class="row">
     <div class="col-md-8 blog-main">
-      <h3 class="pb-4 mb-4 border-bottom"> Recent Post </h3>
+      <div class='row pb-4 mb-4 border-bottom'>
+        <div class="col-sm-10 col-12">
+          <h3 class=""> Recent Post </h3>       
+        </div>
+        <div class="col-sm-2 col-12">
+          <a class="btn btn-primary " href="{% url 'post-create' %}">New Post</a>
+        </div>
+      </div>
       {% for post in posts %}
-        <div class="blog-post">
-          <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}"> 
-          <h3 class="blog-post-title">{{post.title}}</h3>
-          <p class="blog-post-meta">{{post.published}} by <a href="#">{{post.author.display_name}}</a></p>
-          <p class="blog-post">{{post.content|safe}}</p>
-
-        </div><!-- /.blog-post -->
+        <article class="media content-section">
+          <div class="media-body">
+            <div class="article-metadata">
+              <img class="rounded-circle article-img" src="{{ post.author.profile.avatar.url }}">          
+              <a class="mr-2" href="{% url 'user-posts' post.author.display_name %}">{{ post.author.display_name }}</a>
+              <small class="text-muted">{{ post.published|date:'F d, Y'}}</small>
+            </div>
+            <h2><a style='float' class="article-title" href="{% url 'post-detail' post.id%}">{{ post.title }}</a></h2>
+            <p class="article-content">{{ post.content|safe }}</p>
+          </div>
+        </article>
       {% endfor %}
       {% if is_paginated %}
 

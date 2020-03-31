@@ -10,10 +10,13 @@
     <li>Display name: <strong>{{user.display_name}}</strong></li>
     <li>Email: <strong>{{user.email}}</strong></li>
     
-    <img src="{{ user.profile.avatar.url }}">
+    <img class='rounded-circle article-img' src="{{ user.profile.avatar.url }}">
 
     <li>{% if request.user.profile.account_verified %}Verified{% else %}Unverified{% endif %}</li>
   </ul>
-  <a href="{% url 'profile_edit' %}">Edit</a>    
+  <a href="{% url 'profile_edit' %}">Edit</a>   
+  <div class='row'>
+    
+  </div> 
 </div>
 {% endblock content %}

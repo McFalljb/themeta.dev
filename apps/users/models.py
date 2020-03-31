@@ -52,7 +52,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     """
 
     email = models.EmailField(_('email address'), blank=False, unique=True)
-    first_name = models.CharField(_('first name'), max_length=40, blank=True, null=True, unique=False)
+    first_name = models.CharField(_('first name'), max_length=40, blank=False, null=True, unique=False)
     last_name = models.CharField(_('last name'), max_length=40, blank=True, null=True, unique=False)
     display_name = models.CharField(_('display name'), max_length=14, blank=True, null=True, unique=False)
     is_staff = models.BooleanField(_('staff status'), default=False,
@@ -142,10 +142,10 @@ class UserProfile(models.Model):
 
         img = Image.open(self.avatar.path)
 
-        if img.height > 240 or img.width > 240:
-            output_size = (240, 240)
+        if img.height > 80 or img.width > 80:
+            output_size = (80, 80)
             img.thumbnail(output_size)
-            img.save(self.image.path)
+            img.save(self.avatar.path)
 
     class Meta():
         verbose_name = _('user_profile')
@@ -169,12 +169,10 @@ def set_initial_user_names(request, user, sociallogin=None, **kwargs):
     From http://birdhouse.org/blog/2013/12/03/django-allauth-retrieve-firstlast-names-from-fb-twitter-google/comment-page-1/
     """
 
-    preferred_avatar_size_pixels = 256
+    preferred_avatar_size_pixels = 80
 
-    picture_url = "http://www.gravatar.com/avatar/{0}?s={1}".format(
-        hashlib.md5(user.email.encode('UTF-8')).hexdigest(),
-        preferred_avatar_size_pixels
-    )
+    picture_url = 'profile_pics/default.jpg'
+    
 
     if sociallogin:
         # Extract first / last names from social nets and store on User record
@@ -193,7 +191,8 @@ def set_initial_user_names(request, user, sociallogin=None, **kwargs):
             # verified = sociallogin.account.extra_data['verified_email']
             picture_url = sociallogin.account.extra_data['picture']
 
-    profile = UserProfile(user=user, avatar_url=picture_url)
+    
+    profile = UserProfile(user=user, avatar=picture_url)
     profile.save()
 
     user.guess_display_name()

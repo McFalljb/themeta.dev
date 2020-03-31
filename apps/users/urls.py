@@ -16,6 +16,7 @@ Including another URLconf
 
 from django.urls import path
 from . import views
+from apps.blog import views as bviews
 
 urlpatterns = [
     path('users/profile/', views.UserProfile, name='account_profile'),

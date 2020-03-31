@@ -27,8 +27,16 @@ class UserAdminForm(forms.ModelForm):
         return super().is_valid()
 
 class CustomSignupForm(SignupForm):
-    display_name = forms.CharField(max_length=14, label='display name')
-    def signup(self, request, user):
-        user.display_name = self.cleaned_data['display name']        
+    first_name = forms.CharField(max_length=26, label='First name')
+    last_name = forms.CharField(max_length=26, label='Last name')
+    display_name = forms.CharField(max_length=14, label='Display name')
+
+    class Meta:
+        model = User
+        fields = ('First name', 'Last Name', 'Display Name')
+
+    def save(self, request):
+        user = super(CustomSignupForm, self).save(request)
+        user.display_name = self.cleaned_data['display_name']        
         user.save()
         return user
