@@ -16,7 +16,7 @@ class UserEditForm(forms.ModelForm):
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ['avatar']
+        fields = ['avatar', "email_private", 'first_name_private', 'last_name_private']
 
 class UserAdminForm(forms.ModelForm):
     class Meta:
@@ -26,17 +26,24 @@ class UserAdminForm(forms.ModelForm):
     def is_valid(self):
         return super().is_valid()
 
+
+YEARS= [x for x in range(1940,2021)]
+
 class CustomSignupForm(SignupForm):
     first_name = forms.CharField(max_length=26, label='First name')
     last_name = forms.CharField(max_length=26, label='Last name')
     display_name = forms.CharField(max_length=14, label='Display name')
+    dob = forms.CharField(label='Date of Birth', widget=forms.widgets.DateTimeInput(attrs={"type": "date"}))
+    
 
     class Meta:
         model = User
-        fields = ('First name', 'Last Name', 'Display Name')
+        fields = ('first_name', 'last_name', 'display_name', 'dob')
 
     def save(self, request):
         user = super(CustomSignupForm, self).save(request)
-        user.display_name = self.cleaned_data['display_name']        
+        user.display_name = self.cleaned_data['display_name']    
+        user.dob = self.cleaned_data['dob']    
         user.save()
         return user
+

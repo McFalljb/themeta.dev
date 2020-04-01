@@ -38,19 +38,6 @@ class MyUserManager(UserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    """User instances represent a user on this site.
-
-    Important: You don't have to use a custom user model. I did it here because
-    I didn't want a username to be part of the system and I wanted other data
-    to be part of the user and not in a separate table. 
-
-    You can avoid the username issue without writing a custom model but it
-    becomes increasingly obtuse as time goes on. Write a custom user model, then
-    add a custom admin form and model.
-
-    Remember to change ``AUTH_USER_MODEL`` in ``settings.py``.
-    """
-
     email = models.EmailField(_('email address'), blank=False, unique=True)
     first_name = models.CharField(_('first name'), max_length=40, blank=False, null=True, unique=False)
     last_name = models.CharField(_('last name'), max_length=40, blank=True, null=True, unique=False)
@@ -61,8 +48,10 @@ class User(AbstractBaseUser, PermissionsMixin):
                                     help_text=_('Designates whether this user should be treated as '
                                                 'active. Unselect this instead of deleting accounts.'))
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
-
+    dob = models.CharField(verbose_name="dob", blank=True, null=True, max_length=8)
     objects = MyUserManager()
+
+    #Set variables in profile to private.
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -119,8 +108,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def natural_key(self):
         return (self.email,)
-
-
+    
 
 class UserProfile(models.Model):
     """Profile data about a user.
@@ -132,7 +120,9 @@ class UserProfile(models.Model):
     """
     user = models.OneToOneField(User, primary_key=True, verbose_name='user', related_name='profile', on_delete=models.CASCADE)
     avatar = models.ImageField(default='profile_pics/default.jpg', upload_to='profile_pics')
-    dob = models.DateField(verbose_name="dob", blank=True, null=True)
+    email_private = models.BooleanField(_('email private'), default=False)
+    first_name_private = models.BooleanField(_('first name private'), default=True)
+    last_name_private = models.BooleanField(_('last name private'), default=True)
 
     def __str__(self):
         return force_text(self.user.email)
