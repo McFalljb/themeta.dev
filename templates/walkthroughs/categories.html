@@ -1,21 +1,23 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
+<div class='container'>
+<br><br>
     <div class="row">
-        {% for tut, partone in part_ones.items %}
-
+        {% for cat in categories %}
             <div class="col s12 m6 l4">
-                <a href="{{partone}}", style="color:#000">
-                    <div class="card hoverable">
+                
+                    <div class="card" style="width: 18rem;">
                         <div class="card-content">
-                            <div class="card-title">{{tut.tutorial_series}}</div>
+                            <div class="card-title">{{cat.tutorial_category}}</div>
                             <!--<p style="font-size:70%">Published {{tut.tutorial_published}}</p>-->
-                            <p>{{tut.series_summary}}</p>
+                            <p>{{cat.category_summary}}</p>
+                            <a href="{{cat.category_slug}}" class="btn btn-primary">View</a>
                         </div>
                     </div>
                 </a>
             </div>
         {% endfor %}
     </div>
+</div>
 {% endblock %}

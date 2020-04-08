@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class='container'>
+<br><br>
+    <div class="row">
+        {% for tut, partone in part_ones.items %}
+
+            <div class="col s12 m6 l4">
+                
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-body">
+                            <div class="card-title">{{tut.tutorial_series}}</div>
+                            <!--<p style="font-size:70%">Published {{tut.tutorial_published}}</p>-->
+                            <p class='card-text'>{{tut.series_summary}}</p>
+                            <a href="{{partone}}" class="btn btn-primary">View</a>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

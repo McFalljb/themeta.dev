@@ -6,8 +6,8 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 
 
-def walkthrough(request):
-    return render(request, 'walkthrough.html')
+def walkthroughs(request):
+    return render(request=request, template_name="walkthroughs/categories.html", context={"categories": TutorialCategory.objects.all})
 
 
 def single_slug(request, single_slug):
@@ -21,7 +21,7 @@ def single_slug(request, single_slug):
             part_one = Tutorial.objects.filter(tutorial_series__tutorial_series=m.tutorial_series).earliest("tutorial_published")
             series_urls[m] = part_one.tutorial_slug
 
-        return render(request=request, template_name='main/category.html', context={"tutorial_series": matching_series, "part_ones": series_urls})
+        return render(request=request, template_name='walkthroughs/series.html', context={"tutorial_series": matching_series, "part_ones": series_urls})
 
     tutorials = [t.tutorial_slug for t in Tutorial.objects.all()]
 
@@ -30,7 +30,7 @@ def single_slug(request, single_slug):
         tutorials_from_series = Tutorial.objects.filter(tutorial_series__tutorial_series=this_tutorial.tutorial_series).order_by('tutorial_published')
         this_tutorial_idx = list(tutorials_from_series).index(this_tutorial)
 
-        return render(request=request, template_name='main/tutorial.html',
+        return render(request=request, template_name='walkthroughs/tutorial.html',
                       context={"tutorial": this_tutorial, "sidebar": tutorials_from_series, "this_tut_idx": this_tutorial_idx})
 
     return HttpResponse(f"'{single_slug}' does not correspond to anything we know of!")

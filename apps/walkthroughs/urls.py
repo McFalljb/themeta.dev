@@ -17,6 +17,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [ 
-    #path('walkthroughs/', views.walkthrough,  name='walkthrough'),
+    path('walkthroughs/', views.walkthroughs,  name='walkthroughs'),
     path("walkthroughs/<single_slug>", views.single_slug, name="single_slug"),
 ]

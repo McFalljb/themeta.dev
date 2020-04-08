@@ -22,6 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('apps.blog.urls')),
     path('', include('apps.users.urls')),
+    path('', include('apps.walkthroughs.urls')),
     path('accounts/', include('allauth.urls')), # django allauth
     path('tinymce/', include('tinymce.urls')), #tinymce
 ]
