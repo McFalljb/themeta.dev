@@ -5,36 +5,22 @@
 <br><br>
     <div class="row">
 
-        <div class="col-md-10">
+        <div class="col-sm-9">
             <h3>{{tutorial.tutorial_title}}</h3>
             <p style="font-size:70%">Published {{tutorial.tutorial_published}}</p>
             {{tutorial.tutorial_content|safe}}
         </div>
 
         <div class="col">
-            <div class="btn-group-vertical">
+            <ul class="list-group">
                 {% for tutorial in sidebar %}
                     {% if forloop.counter0 == this_tut_idx %}
-                        
-                            
-                                <a href="{{tutorial.tutorial_slug}}" class="btn btn-secondary" role="button">{{tutorial.tutorial_title}}</a>
-                            
-                            <!--<div class="collapsible-header">{{tutorial.tutorial_title}}<br>(currently viewing)</div>-->
-                        
+                        <li class="list-group-item active">{{tutorial.tutorial_title}}</li>                                                    
                     {% else %}
-                        
-                            
-                                <a href="{{tutorial.tutorial_slug}}" class="btn btn-secondary" role="button">{{tutorial.tutorial_title}}</a>
-                                <!--<div class="collapsible-header">{{tutorial.tutorial_title}}</div>
-                                <div class="collapsible-body">
-                                    <p><a href="/{{tutorial.tutorial_slug}}"><button class="btn waves-effect waves-light right-align" style="background-color:lightblue; color:white">Go</button></a></p>
-
-                                </div>-->
-                            
-                        
+                        <a href="{{tutorial.tutorial_slug}}"> <li class="list-group-item">{{tutorial.tutorial_title}}</li></a>
                     {% endif %}
                 {% endfor %}
-            </div>
+            </ul>
         </div>
 
     </div>

@@ -3,22 +3,75 @@
 {% block content %}
 
 <div class="container">
-  <h3>Profile</h3>
-  <ul class="list-unstyled">
-    <li>First name: <strong>{{user.first_name}}</strong></li>
-    <li>Last name: <strong>{{user.last_name}}</strong></li>
-    <li>Display name: <strong>{{user.display_name}}</strong></li>
-    <li>Email: <strong>{{user.email}}</strong></li>
-    <li>Date Joined: <strong>{{user.date_joined}}</strong></li>
-    
-    
-    <img class='rounded-circle article-img' src="{{ user.profile.avatar.url }}">
+<br><br>
+  <div class ='row'>
+    <div class ='col-8'>   
+      <div class="card">
+        <h5 class="card-header">Bio</h5>
+        <div class="card-body">        
+          <p class="card-text">{{user.profile.bio|safe}}</p>          
+        </div>
+      </div>
+    </div>
+    <div class ='col-4'>
+      <h3>Profile</h3>
+      <ul class="list-unstyled">
+        <img class='rounded-circle article-img' src="{{ user.profile.avatar.url }}">
+        <li>First name: <strong>{{user.first_name}}</strong></li>
+        <li>Last name: <strong>{{user.last_name}}</strong></li>
+        <li>Display name: <strong>{{user.display_name}}</strong></li>
+        <li>Email: <strong>{{user.email}}</strong></li>
+        <li>Date Joined: <strong>{{user.date_joined}}</strong></li>
+        
+        <!--<li>{% if request.user.profile.account_verified %}Verified{% else %}Unverified{% endif %}</li>-->
+      </ul>
+      {% if request.user.display_name == user.display_name%}
+        <a href="{% url 'profile_edit' user.display_name %}">Edit</a> 
+      {% endif %}     
+    </div>
+    </div> 
+     <div class="col-md-8 blog-main">
+      <div class='row pb-4 mb-4 border-bottom'>
+        <div class="col-sm-10 col-12">
+          <h4 class=""> Post History </h4>       
+        </div>     
+      </div>
+      {% for post in posts %}
+        {% if post.author.display_name == user.display_name %}
+          <article class="media content-section">
+            <div class="media-body">
+              <div class="article-metadata">
+                <img class="rounded-circle article-img" src="{{ post.author.profile.avatar.url }}">          
+                <a class="mr-2 align-bottom" href="{% url 'user-posts' post.author.display_name %}">{{ post.author.display_name }}</a>
+                <small class="text-muted align-bottom">{{ post.published|date:'F d, Y'}}</small>
+              </div>
+              <h2><a style='float' class="article-title" href="{% url 'post-detail' post.id%}">{{ post.title }}</a></h2>
+              <p class="article-content">{{ post.content|safe}}</p>
+            </div>
+          </article>
+        {% endif %}
+      {% endfor %}
+      {% if is_paginated %}
 
-    <li>{% if request.user.profile.account_verified %}Verified{% else %}Unverified{% endif %}</li>
-  </ul>
-  <a href="{% url 'profile_edit' %}">Edit</a>   
-  <div class='row'>
-    
-  </div> 
+        {% if page_obj.has_previous %}
+          <a class='btn btn-outline-info mb-4' href="?page=1">First</a>
+          <a class='btn btn-outline-info mb-4' href="?page={{ page_obj.previous_page_number}}">Previous</a>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+          {% if page_obj.number == num %}
+            <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+          {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+          {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+          <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
+          <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+        {% endif %}
+
+      {% endif %}
+    </div><!-- /.blog-main -->
 </div>
 {% endblock content %}

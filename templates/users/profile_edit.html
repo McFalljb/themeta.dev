@@ -1,23 +1,51 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
+<br><br>
   <div class='container'>
-    <div class="row">
-      <div class="col-md-6 col-lg-6">
+    <div class='row'>
+      <div class="col-md-3 order-md-2 mb-4">
+        <ul class="list-group mb-3">
+          <li class="list-group-item d-flex justify-content-between lh-condensed">
+            <div>
+              <a href="{% url 'account_change_password' %}">Change Password</a>             
+            </div>           
+          </li>
+          <li class="list-group-item d-flex justify-content-between lh-condensed">
+            <div>
+              <a href="{% url 'account_email' %}">Edit Email Addresses</a>             
+            </div>           
+          </li>
+          <li class="list-group-item d-flex justify-content-between lh-condensed">
+            <div>
+              <a href="{% url 'socialaccount_connections' %}">Edit Social Logins</a>            
+            </div>           
+          </li>    
+        </ul>
+      </div>
+      <div class="col-md-9 order-md-1">
         <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ u_form|crispy }}
-        {{ p_form|crispy }}
-        
-        
-        <button type="submit" class="btn btn-primary"> Submit </button>
-      </div>
-      <div class="col-md-6 col-lg-6">
-        <ul>
-          <li><a href="{% url 'account_change_password' %}">Change Password</a></li>
-          <li><a href="{% url 'account_email' %}">Edit Email Addresses</a></li>
-          <li><a href="{% url 'socialaccount_connections' %}">Edit Social Logins</a></li>
-        </ul>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              {{ u_form.first_name|as_crispy_field }}
+              {{ u_form.last_name|as_crispy_field }}
+              {{ u_form.display_name|as_crispy_field }}
+              {{ p_form.avatar|as_crispy_field }}
+            </div>
+            <div class="col-md-6 mb-3">
+              <p>Selecting the options below will make the associated
+              item not visible to the public.</p>
+              {{ p_form.email_private|as_crispy_field }}
+              {{ p_form.first_name_private|as_crispy_field }}
+              {{ p_form.last_name_private|as_crispy_field }}
+            </div>
+          </div>
+          <div class="mb-3">
+            {{p_form.bio|as_crispy_field}}
+          </div>
+          <button class="btn btn-outline-info" type="submit">Update</button>
+        </form>
       </div>
     </div>
   </div>

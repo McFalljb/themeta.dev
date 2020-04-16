@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Post
-from apps.users import models as usermodels
+from apps.users.models import User
 from django.views.generic import (
     ListView,
     DetailView,
@@ -10,8 +10,6 @@ from django.views.generic import (
     DeleteView
 )
 from django.conf import settings
-
-User = usermodels.User
 
 # Create your views here.
 def homepage(request):
@@ -22,10 +20,6 @@ def bloghome(request):
         'posts': Post.objects.all()
     }
     return render(request, 'blog/bloghome.html', context)
-
-def about(request):
-    return render(request, 'blog/about.html', {'title': 'About'})
-
 
 """
 Classes
