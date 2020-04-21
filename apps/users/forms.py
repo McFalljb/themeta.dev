@@ -42,6 +42,8 @@ class CustomSignupForm(SignupForm):
         user = super(CustomSignupForm, self).save(request)
         user.display_name = self.cleaned_data['display_name']    
         user.dob = self.cleaned_data['dob']    
+        profile = UserProfile(user=user)
+        profile.save()
         user.save()
         return user
 

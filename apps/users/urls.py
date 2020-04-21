@@ -20,7 +20,7 @@ from . import views
 
 urlpatterns = [
     #path('users/<str:display_name>/', UserProfileDetailView.as_view(), name='user_profile'),
-    path('users/<str:display_name>/', views.get_user_profile, name='user_profile'),
+    path('users/<str:display_name>/', views.UserProfile, name='user_profile'),
     #path('users/<str:display_name>/', views.UserProfile, name='user_profile'),
     #path('users/profile/', views.UserProfile, name='user_profile'),  
 

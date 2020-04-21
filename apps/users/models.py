@@ -70,18 +70,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     #     full_name = '%s %s' % (self.first_name, self.last_name)
     #     return full_name.strip()
 
-    # def guess_display_name(self):
-    #     """Set a display name, if one isn't already set."""
-    #     if self.display_name:
-    #         return
+    def guess_display_name(self):
+        """Set a display name, if one isn't already set."""
+        if self.display_name:
+            return
 
-    #     if self.first_name and self.last_name:
-    #         dn = "%s %s" % (self.first_name, self.last_name[0])  # like "Andrew E"
-    #     elif self.first_name:
-    #         dn = self.first_name
-    #     else:
-    #         dn = 'You'
-    #     self.display_name = dn.strip()
+        if self.first_name and self.last_name:
+            dn = "%s %s" % (self.first_name, self.last_name[0])  # like "Andrew E"
+        elif self.first_name:
+            dn = self.first_name
+        else:
+            dn = 'You'
+        self.display_name = dn.strip()
 
     def email_user(self, subject, message, from_email=None):
         """
@@ -128,10 +128,7 @@ class UserProfile(models.Model):
 @receiver(user_signed_up)
 def set_initial_user_names(request, user, sociallogin=None, **kwargs):
 
-    preferred_avatar_size_pixels = 80
-
-    picture_url = user.profile.avatar
-    
+    profile = UserProfile(user=user)
 
     if sociallogin:
         # Extract first / last names from social nets and store on User record
@@ -141,14 +138,14 @@ def set_initial_user_names(request, user, sociallogin=None, **kwargs):
             user.first_name = sociallogin.account.extra_data['first_name']
             user.last_name = sociallogin.account.extra_data['last_name']
             # verified = sociallogin.account.extra_data['verified']
-            picture_url = "http://graph.facebook.com/{0}/picture?width={1}&height={1}".format(
-                sociallogin.account.uid, preferred_avatar_size_pixels)
+            #picture_url = "http://graph.facebook.com/{0}/picture?width={1}&height={1}".format(
+            #    sociallogin.account.uid, preferred_avatar_size_pixels)
 
         if sociallogin.account.provider == 'google':
             user.first_name = sociallogin.account.extra_data['given_name']
             user.last_name = sociallogin.account.extra_data['family_name']
             # verified = sociallogin.account.extra_data['verified_email']
-            picture_url = sociallogin.account.extra_data['picture']
+            #picture_url = sociallogin.account.extra_data['picture']
 
     def guess_display_name(self):
         """Set a display name, if one isn't already set."""
@@ -156,6 +153,7 @@ def set_initial_user_names(request, user, sociallogin=None, **kwargs):
             user.display_name = self.username
             return
 
-    profile = UserProfile(user=user, avatar=picture_url)
+    profile = UserProfile(user=user)
     profile.save()
+    user.guess_display_name()
     user.save()

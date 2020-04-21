@@ -23,10 +23,12 @@ from .models import UserProfile, User
 
 #     #return render(request, 'users/profile.html', context)
 
-def get_user_profile(request, display_name):
+def UserProfile(request, display_name):
     user = User.objects.get(display_name=display_name)
     post = {'posts': Post.objects.all()}
-    return render(request, 'users/profile.html', {"user":user, "post":post})
+
+    #return render(request, 'users/profile.html', {"user":user, "post":post})
+    return render(request, 'users/profile.html', post)
 
 @login_required
 def UserEditProfile(request):

@@ -25,7 +25,7 @@
               <small class="text-muted align-bottom">{{ post.published|date:'F d, Y'}}</small>
             </div>
             <h2><a style='float' class="article-title" href="{% url 'post-detail' post.id%}">{{ post.title }}</a></h2>
-            <p class="article-content">{{ post.content}}</p>
+            <p class="article-content">{{ post.content|safe}}</p>
           </div>
         </article>
       {% endfor %}
