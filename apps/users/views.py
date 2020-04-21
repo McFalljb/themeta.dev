@@ -25,25 +25,27 @@ from .models import UserProfile, User
 
 def UserProfile(request, display_name):
     user = User.objects.get(display_name=display_name)
-    post = {'posts': Post.objects.all()}
+    post = Post.objects.all()
 
-    #return render(request, 'users/profile.html', {"user":user, "post":post})
-    return render(request, 'users/profile.html', post)
+    return render(request, 'users/profile.html', {"user":user, "posts":post})
+    #return render(request, 'users/profile.html', post)
 
 @login_required
-def UserEditProfile(request):
+def UserEditProfile(request, display_name):
+
+    user = User.objects.get(display_name=display_name)
 
     if request.method == 'POST':
         u_form = UserEditForm(request.POST, instance=request.user)
         p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
-        #pp_form = UserPrivateForm(request.POST)
+        
 
         if u_form.is_valid() and p_form.is_valid():
             u_form.save()
             p_form.save()
-            #pp_form.save()
+            
             messages.success(request, f'Your profile has been updated!')
-            return redirect('user_profile')
+            #return redirect('user_profile')
     
     else:
         u_form = UserEditForm(instance=request.user)
@@ -53,12 +55,14 @@ def UserEditProfile(request):
     context = {
         'u_form': u_form,
         'p_form': p_form,       
-        #'pp_form' : pp_form,
+        
     }
-    # user = User.objects.get(display_name=display_name)
-    # return render(request, 'users/profile_edit.html', {"user":user})
 
-    return render(request, 'users/profile_edit.html', context)
+
+    
+    return render(request, 'users/profile_edit.html', {"user":user, 'u_form':u_form, 'p_form':p_form})
+
+    #return render(request, 'users/profile_edit.html', context)
 
 
 class MyModelInstanceMixin(FormMixin):
