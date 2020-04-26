@@ -32,11 +32,11 @@ class CustomSignupForm(SignupForm):
     first_name = forms.CharField(max_length=26, label='First name')
     last_name = forms.CharField(max_length=26, label='Last name')
     display_name = forms.CharField(max_length=14, label='display_name')
-    dob = forms.CharField(label='Date of Birth', widget=forms.widgets.DateTimeInput(attrs={"type": "date"}))
+    #dob = forms.CharField(label='Date of Birth', widget=forms.widgets.DateTimeInput(attrs={"type": "date"}))
     
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'display_name', 'dob')
+        fields = ('first_name', 'last_name', 'display_name')
 
     def save(self, request):
         user = super(CustomSignupForm, self).save(request)

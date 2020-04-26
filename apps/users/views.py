@@ -7,10 +7,11 @@ from .forms import UserEditForm, ProfileUpdateForm
 from apps.blog.models import Post
 from django.views.generic import ListView, DetailView
 from .models import UserProfile, User
+from django.core.paginator import Paginator
 
 
 
-# def UserProfile(request, display_name):
+# def UserProfile(request):
     
 #     context = {
 
@@ -19,13 +20,13 @@ from .models import UserProfile, User
 
     
 #     user = User.objects.get(display_name=display_name)
-#     return render(request, 'users/profile.html', {"user":user})
 
 #     #return render(request, 'users/profile.html', context)
 
 def UserProfile(request, display_name):
     user = User.objects.get(display_name=display_name)
-    post = Post.objects.all()
+    post = Post.objects.filter(author = user).order_by('-published')[0:1]
+    
 
     return render(request, 'users/profile.html', {"user":user, "posts":post})
     #return render(request, 'users/profile.html', post)
