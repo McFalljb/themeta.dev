@@ -19,10 +19,16 @@
         <div class="card-body">
           <ul class="list-unstyled">
             <img class='rounded-circle article-img' src="{{ user.profile.avatar.url }}">
-            <li>First name: <strong>{{user.first_name}}</strong></li>
-            <li>Last name: <strong>{{user.last_name}}</strong></li>
+            {% if user.profile.first_name_private == False%}
+              <li>First name: <strong>{{user.first_name}}</strong></li>
+            {% endif %}
+            {% if user.profile.last_name_private == False%}
+              <li>Last name: <strong>{{user.last_name}}</strong></li>
+            {% endif %}
             <li>Display name: <strong>{{user.display_name}}</strong></li>
-            <li>Email: <strong>{{user.email}}</strong></li>
+            {% if user.profile.email_private == False%}
+              <li>Email: <strong>{{user.email}}</strong></li>
+            {% endif %}
             <li>Date Joined: <strong>{{user.date_joined}}</strong></li>
             <br>
             {% if request.user.display_name == user.display_name%}

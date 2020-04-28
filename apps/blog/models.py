@@ -11,6 +11,7 @@ class Post(models.Model):
     content = HTMLField('Post Content')
     published = models.DateField(default=timezone.now)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+    #images = models.ImageField(upload_to='past_images')
 
     def __str__(self):
         return self.title

@@ -31,7 +31,7 @@ YEARS= [x for x in range(1940,2021)]
 class CustomSignupForm(SignupForm):
     first_name = forms.CharField(max_length=26, label='First name')
     last_name = forms.CharField(max_length=26, label='Last name')
-    display_name = forms.CharField(max_length=14, label='display_name')
+    display_name = forms.CharField(max_length=14, label='Display Name')
     #dob = forms.CharField(label='Date of Birth', widget=forms.widgets.DateTimeInput(attrs={"type": "date"}))
     
     class Meta:
