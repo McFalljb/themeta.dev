@@ -89,8 +89,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         send_mail(subject, message, from_email, [self.email])
 
-    # def __str__(self):
-    #     return self.email
+    def __str__(self):
+        return self.email
 
     # def natural_key(self):
     #     return (self.email,)
