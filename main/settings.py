@@ -46,10 +46,12 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
 
     'tinymce',
+    'admin_honeypot',
     'crispy_forms', 
 
     'apps.users',
     'apps.blog',
+    'apps.walkthroughs',
 ]
 
 MIDDLEWARE = [
@@ -125,10 +127,21 @@ SOCIALACCOUNT_PROVIDERS = {
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'djangometa',
+        'USER': 'mcfalljb',
+        'PASSWORD': '4418',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
@@ -169,7 +182,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+    #'/var/www/static/',
+]
+#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -191,17 +208,16 @@ TINYMCE_DEFAULT_CONFIG = {
             table code lists fullscreen  insertdatetime  nonbreaking
             contextmenu directionality searchreplace wordcount visualblocks
             visualchars code fullscreen autolink lists  charmap print  hr
-            anchor pagebreak
+            anchor pagebreak spellchecker
             ''',
     'toolbar1': '''
-            fullscreen preview bold italic underline | fontselect,
+            bold italic underline | fontselect,
             fontsizeselect  | forecolor backcolor | alignleft alignright |
             aligncenter alignjustify | indent outdent | bullist numlist table |
-            | link image media | codesample | visualblocks visualchars |
-            charmap hr pagebreak nonbreaking anchor |  code |
+            | link image | codesample | visualblocks visualchars | code |
             ''',
     'contextmenu': 'formats | link image',
-    'menubar': True,
+    'menubar': False,
     'statusbar': True,
 
     'content_css': 'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css',

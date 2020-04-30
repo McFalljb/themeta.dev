@@ -1,5 +1,5 @@
 import hashlib
-
+from django.urls import reverse
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
 from django.core.mail import send_mail
 from django.db import models
@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.utils.http import urlquote
 from django.utils.translation import ugettext_lazy as _
 from PIL import Image
+from tinymce import HTMLField
 
 try:
     from django.utils.encoding import force_text
@@ -21,7 +22,7 @@ class MyUserManager(UserManager):
     Custom User Model manager.
 
     It overrides default User Model manager's create_user() and create_superuser,
-    which requires username field.
+    which requires display_name field.
     """
 
     def create_user(self, email, password=None, **kwargs):
@@ -38,31 +39,20 @@ class MyUserManager(UserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    """User instances represent a user on this site.
-
-    Important: You don't have to use a custom user model. I did it here because
-    I didn't want a username to be part of the system and I wanted other data
-    to be part of the user and not in a separate table. 
-
-    You can avoid the username issue without writing a custom model but it
-    becomes increasingly obtuse as time goes on. Write a custom user model, then
-    add a custom admin form and model.
-
-    Remember to change ``AUTH_USER_MODEL`` in ``settings.py``.
-    """
-
     email = models.EmailField(_('email address'), blank=False, unique=True)
-    first_name = models.CharField(_('first name'), max_length=40, blank=True, null=True, unique=False)
+    first_name = models.CharField(_('first name'), max_length=40, blank=False, null=True, unique=False)
     last_name = models.CharField(_('last name'), max_length=40, blank=True, null=True, unique=False)
-    display_name = models.CharField(_('display name'), max_length=14, blank=True, null=True, unique=False)
+    display_name = models.CharField(_('display_name'), max_length=14, blank=True, null=True, unique=True)
     is_staff = models.BooleanField(_('staff status'), default=False,
                                    help_text=_('Designates whether the user can log into this admin site.'))
     is_active = models.BooleanField(_('active'), default=True,
                                     help_text=_('Designates whether this user should be treated as '
                                                 'active. Unselect this instead of deleting accounts.'))
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
-
+    dob = models.CharField(verbose_name="dob", blank=True, null=True, max_length=8)
     objects = MyUserManager()
+
+    #Set variables in profile to private.
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -73,27 +63,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         db_table = 'auth_user'
         abstract = False
 
-    def get_absolute_url(self):
-        # TODO: what is this for?
-        return "/users/%s/" % urlquote(self.email)  # TODO: email ok for this? better to have uuid?
-
-    @property
-    def name(self):
-        if self.first_name:
-            return self.first_name
-        elif self.display_name:
-            return self.display_name
-        return 'You'
-
-    def get_full_name(self):
-        """
-        Returns the first_name plus the last_name, with a space in between.
-        """
-        full_name = '%s %s' % (self.first_name, self.last_name)
-        return full_name.strip()
-
-    def get_short_name(self):
-        return self.first_name
+    # def get_full_name(self):
+    #     """
+    #     Returns the first_name plus the last_name, with a space in between.
+    #     """
+    #     full_name = '%s %s' % (self.first_name, self.last_name)
+    #     return full_name.strip()
 
     def guess_display_name(self):
         """Set a display name, if one isn't already set."""
@@ -117,35 +92,32 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
 
-    def natural_key(self):
-        return (self.email,)
-
-
+    # def natural_key(self):
+    #     return (self.email,)
+    
 
 class UserProfile(models.Model):
-    """Profile data about a user.
-    Certain data makes sense to be in the User model itself, but some
-    is more "profile" data than "user" data. I think this is things like
-    date-of-birth, favourite colour, etc. If you have domain-specific
-    profile information you might create additional profile classes, like
-    say UserGeologistProfile.
-    """
+
     user = models.OneToOneField(User, primary_key=True, verbose_name='user', related_name='profile', on_delete=models.CASCADE)
     avatar = models.ImageField(default='profile_pics/default.jpg', upload_to='profile_pics')
-    dob = models.DateField(verbose_name="dob", blank=True, null=True)
-
-    def __str__(self):
-        return force_text(self.user.email)
+    bio = HTMLField(default='Describe your self and what you are working on!')
+    email_private = models.BooleanField(_('email private'), default=False)
+    first_name_private = models.BooleanField(_('first name private'), default=True)
+    last_name_private = models.BooleanField(_('last name private'), default=True)
     
+    
+    def __str__(self):
+        return self.user.display_name
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
         img = Image.open(self.avatar.path)
 
-        if img.height > 240 or img.width > 240:
-            output_size = (240, 240)
+        if img.height > 80 or img.width > 80:
+            output_size = (80, 80)
             img.thumbnail(output_size)
-            img.save(self.image.path)
+            img.save(self.avatar.path)
 
     class Meta():
         verbose_name = _('user_profile')
@@ -155,26 +127,8 @@ class UserProfile(models.Model):
 
 @receiver(user_signed_up)
 def set_initial_user_names(request, user, sociallogin=None, **kwargs):
-    """
-    When a social account is created successfully and this signal is received,
-    django-allauth passes in the sociallogin param, giving access to metadata on the remote account, e.g.:
- 
-    sociallogin.account.provider  # e.g. 'twitter' 
-    sociallogin.account.get_avatar_url()
-    sociallogin.account.get_profile_url()
-    sociallogin.account.extra_data['screen_name']
- 
-    See the socialaccount_socialaccount table for more in the 'extra_data' field.
 
-    From http://birdhouse.org/blog/2013/12/03/django-allauth-retrieve-firstlast-names-from-fb-twitter-google/comment-page-1/
-    """
-
-    preferred_avatar_size_pixels = 256
-
-    picture_url = "http://www.gravatar.com/avatar/{0}?s={1}".format(
-        hashlib.md5(user.email.encode('UTF-8')).hexdigest(),
-        preferred_avatar_size_pixels
-    )
+    profile = UserProfile(user=user)
 
     if sociallogin:
         # Extract first / last names from social nets and store on User record
@@ -184,17 +138,22 @@ def set_initial_user_names(request, user, sociallogin=None, **kwargs):
             user.first_name = sociallogin.account.extra_data['first_name']
             user.last_name = sociallogin.account.extra_data['last_name']
             # verified = sociallogin.account.extra_data['verified']
-            picture_url = "http://graph.facebook.com/{0}/picture?width={1}&height={1}".format(
-                sociallogin.account.uid, preferred_avatar_size_pixels)
+            #picture_url = "http://graph.facebook.com/{0}/picture?width={1}&height={1}".format(
+            #    sociallogin.account.uid, preferred_avatar_size_pixels)
 
         if sociallogin.account.provider == 'google':
             user.first_name = sociallogin.account.extra_data['given_name']
             user.last_name = sociallogin.account.extra_data['family_name']
             # verified = sociallogin.account.extra_data['verified_email']
-            picture_url = sociallogin.account.extra_data['picture']
+            #picture_url = sociallogin.account.extra_data['picture']
 
-    profile = UserProfile(user=user, avatar_url=picture_url)
+    def guess_display_name(self):
+        """Set a display name, if one isn't already set."""
+        if self.username:
+            user.display_name = self.username
+            return
+
+    profile = UserProfile(user=user)
     profile.save()
-
     user.guess_display_name()
     user.save()

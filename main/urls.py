@@ -19,12 +19,16 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    #path('admin/', admin.site.urls),
+    path('admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),
+    path('bigpp/', admin.site.urls),
     path('', include('apps.blog.urls')),
     path('', include('apps.users.urls')),
+    path('', include('apps.walkthroughs.urls')),
     path('accounts/', include('allauth.urls')), # django allauth
     path('tinymce/', include('tinymce.urls')), #tinymce
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

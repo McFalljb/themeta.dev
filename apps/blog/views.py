@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Post
+from apps.users.models import User
 from django.views.generic import (
     ListView,
     DetailView,
@@ -9,8 +10,6 @@ from django.views.generic import (
     DeleteView
 )
 from django.conf import settings
-
-User = settings.AUTH_USER_MODEL
 
 # Create your views here.
 def homepage(request):
@@ -21,10 +20,6 @@ def bloghome(request):
         'posts': Post.objects.all()
     }
     return render(request, 'blog/bloghome.html', context)
-
-def about(request):
-    return render(request, 'blog/about.html', {'title': 'About'})
-
 
 """
 Classes
@@ -43,7 +38,7 @@ class UserPostListView(ListView):
     paginate_by = 5
 
     def get_queryset(self):
-        user = get_object_or_404(User, username=self.kwargs.get('username'))
+        user = get_object_or_404(User, display_name=self.kwargs.get('display_name'))
         return Post.objects.filter(author = user).order_by('-published')
 
 class PostDetailView(DetailView):

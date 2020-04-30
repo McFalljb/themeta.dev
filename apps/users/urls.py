@@ -16,9 +16,15 @@ Including another URLconf
 
 from django.urls import path
 from . import views
+#from .views import UserProfileDetailView, PostListView
 
 urlpatterns = [
-    path('users/profile/', views.UserProfile, name='account_profile'),
-    #path('users/profile_edit/', views.account_edit, name='account_edit'),
-    path('users/profile_edit/', views.UserEditProfile, name='profile_edit'),
+    #path('users/<str:display_name>/', UserProfileDetailView.as_view(), name='user_profile'),
+    path('users/<str:display_name>/', views.UserProfile, name='user_profile'),
+    #path('users/<str:display_name>/', views.UserProfile, name='user_profile'),
+    #path('users/profile/', views.UserProfile, name='user_profile'),  
+
+    #path('users/profile_edit/', views.UserEditProfile, name='profile_edit'),
+    path('users/profile_edit/<str:display_name>', views.UserEditProfile, name='profile_edit'),
+    
 ]

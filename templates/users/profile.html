@@ -3,17 +3,66 @@
 {% block content %}
 
 <div class="container">
-  <h3>Profile</h3>
-  <ul class="list-unstyled">
-    <li>First name: <strong>{{user.first_name}}</strong></li>
-    <li>Last name: <strong>{{user.last_name}}</strong></li>
-    <li>Display name: <strong>{{user.display_name}}</strong></li>
-    <li>Email: <strong>{{user.email}}</strong></li>
-    
-    <img src="{{ user.profile.avatar.url }}">
-
-    <li>{% if request.user.profile.account_verified %}Verified{% else %}Unverified{% endif %}</li>
-  </ul>
-  <a href="{% url 'profile_edit' %}">Edit</a>    
+<br><br>
+  <div class ='row'>
+    <div class ='col-8'>   
+      <div class="card">
+        <h5 class="card-header">Bio</h5>
+        <div class="card-body">        
+          <p class="card-text">{{user.profile.bio|safe}}</p>          
+        </div>
+      </div>
+    </div>
+    <div class ='col-4'>
+      <div class="card">
+        <h3 class="card-header">Profile</h3>
+        <div class="card-body">
+          <ul class="list-unstyled">
+            <img class='rounded-circle article-img' src="{{ user.profile.avatar.url }}">
+            {% if user.profile.first_name_private == False%}
+              <li>First name: <strong>{{user.first_name}}</strong></li>
+            {% endif %}
+            {% if user.profile.last_name_private == False%}
+              <li>Last name: <strong>{{user.last_name}}</strong></li>
+            {% endif %}
+            <li>Display name: <strong>{{user.display_name}}</strong></li>
+            {% if user.profile.email_private == False%}
+              <li>Email: <strong>{{user.email}}</strong></li>
+            {% endif %}
+            <li>Date Joined: <strong>{{user.date_joined}}</strong></li>
+            <br>
+            {% if request.user.display_name == user.display_name%}
+              <a class="btn btn-primary" href="{% url 'profile_edit' user.display_name %}">Edit</a> 
+            {% endif %} 
+          </ul>
+        </div>
+      </div>
+          
+    </div> 
+     <div class="col-md-8 blog-main">
+      <div class='row pb-4 mb-4 border-bottom'>
+        <div class="col-sm-10 col-12">
+          <h4 class=""> Most Recent Post </h4>       
+        </div>
+        <div class="col-sm-2 col-12">       
+          <a class="btn btn-primary " href="{% url 'user-posts' user.display_name %}">View All</a>     
+        </div>    
+      </div>
+      {% for post in posts %}
+        {% if post.author.display_name == user.display_name %}
+          <article class="media content-section">
+            <div class="media-body">
+              <div class="article-metadata">
+                <img class="rounded-circle article-img" src="{{ post.author.profile.avatar.url }}">          
+                <a class="mr-2 align-bottom" href="{% url 'user-posts' post.author.display_name %}">{{ post.author.display_name }}</a>
+                <small class="text-muted align-bottom">{{ post.published|date:'F d, Y'}}</small>
+              </div>
+              <h2><a style='float' class="article-title" href="{% url 'post-detail' post.id%}">{{ post.title }}</a></h2>
+              <p class="article-content">{{ post.content|safe}}</p>
+            </div>
+          </article>
+        {% endif %}
+      {% endfor %}
+    </div><!-- /.blog-main -->
 </div>
 {% endblock content %}

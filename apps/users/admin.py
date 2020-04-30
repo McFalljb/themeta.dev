@@ -28,7 +28,7 @@ class UserAdmin(DjangoUserAdmin):
     """The project uses a custom User model, so it uses a custom User admin model.
 
     Some related notes at:
-    https://github.com/dabapps/django-email-as-username/blob/master/emailusernames/admin.py
+    https://github.com/dabapps/django-email-as-display_name/blob/master/emailusernames/admin.py
 
     And:
     .../lib/python2.7/site-packages/django/contrib/auth/admin.py
