@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
 
     'tinymce',
+    'admin_honeypot',
     'crispy_forms', 
 
     'apps.users',
